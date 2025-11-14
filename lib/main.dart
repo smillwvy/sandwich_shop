@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'app_styles.dart';
 
 void main() {
   runApp(const App());
@@ -46,7 +47,10 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sandwich Counter'),
+        title: const Text(
+          'Sandwich Counter',
+          style: heading1,
+        ),
       ),
       body: Center(
         child: Column(
@@ -56,16 +60,24 @@ class _OrderScreenState extends State<OrderScreen> {
               _quantity,
               'Footlong',
             ),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
                   onPressed: _increaseQuantity,
-                  child: const Text('Add'),
+                  child: const Text(
+                    'Add',
+                    style: normalText,
+                  ),
                 ),
+                const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: _decreaseQuantity,
-                  child: const Text('Remove'),
+                  child: const Text(
+                    'Remove',
+                    style: normalText,
+                  ),
                 ),
               ],
             ),
@@ -84,6 +96,9 @@ class OrderItemDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text('$quantity $itemType sandwich(es): ${'🥪' * quantity}');
+    return Text(
+      '$quantity $itemType sandwich(es): ${'🥪' * quantity}',
+      style: normalText,
+    );
   }
 }
