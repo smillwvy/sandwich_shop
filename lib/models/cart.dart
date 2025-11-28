@@ -10,6 +10,7 @@ class Cart {
 
   List<Sandwich> get items => List.unmodifiable(_items);
 
+  int get totalItems => _items.length;
   int get totalQuantity => _items.length;
 
   double get totalPrice {
