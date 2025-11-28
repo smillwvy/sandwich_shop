@@ -36,8 +36,15 @@ class Cart {
     return footlongTotal + sixInchTotal;
   }
 
-  void addSandwich(Sandwich sandwich) {
-    _items.add(sandwich);
+  void add(Sandwich sandwich, {int quantity = 1}) {
+    addSandwich(sandwich, quantity: quantity);
+  }
+
+  void addSandwich(Sandwich sandwich, {int quantity = 1}) {
+    if (quantity < 1) return;
+    for (int i = 0; i < quantity; i++) {
+      _items.add(sandwich);
+    }
   }
 
   void removeSandwich(Sandwich sandwich) {
