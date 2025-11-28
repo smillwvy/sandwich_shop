@@ -19,14 +19,21 @@ void main() {
     testWidgets('increments and decrements with icon buttons',
         (WidgetTester tester) async {
       await tester.pumpWidget(const App());
-      await tester.tap(find.byIcon(Icons.add));
-      await tester.pump();
+      final addFinder = find.byIcon(Icons.add);
+      final removeFinder = find.byIcon(Icons.remove);
+
+      await tester.ensureVisible(addFinder);
+      await tester.tap(addFinder);
+      await tester.pumpAndSettle();
       expect(find.text('2'), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.remove));
-      await tester.pump();
+
+      await tester.ensureVisible(removeFinder);
+      await tester.tap(removeFinder);
+      await tester.pumpAndSettle();
       expect(find.text('1'), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.remove));
-      await tester.pump();
+
+      await tester.tap(removeFinder);
+      await tester.pumpAndSettle();
       expect(find.text('0'), findsOneWidget);
     });
   });
@@ -64,8 +71,10 @@ void main() {
     testWidgets('updates cart summary after adding to cart',
         (WidgetTester tester) async {
       await tester.pumpWidget(const App());
-      await tester.tap(find.text('Add to Cart'));
-      await tester.pump(); // rebuild after setState; snackbar can animate separately
+      final addToCartFinder = find.text('Add to Cart');
+      await tester.ensureVisible(addToCartFinder);
+      await tester.tap(addToCartFinder);
+      await tester.pumpAndSettle(); // allow rebuild (and snackbar) to finish
       expect(find.text('Items in cart: 1'), findsOneWidget);
       expect(find.text('Total price: £11.00'), findsOneWidget);
     });
