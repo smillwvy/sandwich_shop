@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sandwich_shop/views/app_styles.dart';
-import 'package:sandwich_shop/repositories/pricing_repository.dart';
-
-enum BreadType { white, wheat, wholemeal }
+import 'package:sandwich_shop/models/sandwich.dart';
+import 'package:sandwich_shop/models/cart.dart';
 
 void main() {
   runApp(const App());
@@ -37,13 +36,12 @@ class _OrderScreenState extends State<OrderScreen> {
   final TextEditingController _notesController = TextEditingController();
   bool _isFootlong = true;
   BreadType _selectedBreadType = BreadType.white;
-  late final PricingRepository _pricingRepository;
+  final Cart _cart = Cart();
 
   @override
   void initState() {
     super.initState();
     _maxQuantity = widget.maxQuantity;
-    _pricingRepository = PricingRepository();
     _notesController.addListener(() {
       setState(() {});
     });
@@ -57,14 +55,22 @@ class _OrderScreenState extends State<OrderScreen> {
 
   VoidCallback? _getIncreaseCallback() {
     if (_quantity < _maxQuantity) {
-      return () => setState(() => _quantity++);
+      return () => setState(() {
+            _cart.addSandwich(_buildSandwich());
+            _quantity = _cart.totalQuantity;
+          });
     }
     return null;
   }
 
   VoidCallback? _getDecreaseCallback() {
     if (_quantity > 0) {
-      return () => setState(() => _quantity--);
+      return () => setState(() {
+            if (_cart.items.isNotEmpty) {
+              _cart.removeSandwich(_cart.items.last);
+              _quantity = _cart.totalQuantity;
+            }
+          });
     }
     return null;
   }
@@ -77,6 +83,14 @@ class _OrderScreenState extends State<OrderScreen> {
     if (value != null) {
       setState(() => _selectedBreadType = value);
     }
+  }
+
+  Sandwich _buildSandwich() {
+    return Sandwich(
+      type: SandwichType.veggieDelight,
+      isFootlong: _isFootlong,
+      breadType: _selectedBreadType,
+    );
   }
 
   List<DropdownMenuEntry<BreadType>> _buildDropdownEntries() {
@@ -93,10 +107,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double totalPrice = _pricingRepository.calculatePrice(
-      quantity: _quantity,
-      isFootlong: _isFootlong,
-    );
+    final double totalPrice = _cart.totalPrice;
 
     String sandwichType = 'footlong';
     if (!_isFootlong) {
@@ -187,7 +198,6 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 }
-
 class StyledButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final IconData icon;
