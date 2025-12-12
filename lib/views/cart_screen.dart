@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sandwich_shop/views/app_styles.dart';
-import 'package:sandwich_shop/views/order_screen.dart';
 import 'package:sandwich_shop/models/cart.dart';
 import 'package:sandwich_shop/models/sandwich.dart';
 import 'package:sandwich_shop/repositories/pricing_repository.dart';
+import 'package:sandwich_shop/views/app_styles.dart';
 import 'package:sandwich_shop/views/checkout_screen.dart';
 
 class CartScreen extends StatefulWidget {
-  const CartScreen({super.key});
+  final Cart cart;
+
+  const CartScreen({super.key, required this.cart});
 
   @override
   State<CartScreen> createState() {
@@ -18,7 +19,7 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   Future<void> _navigateToCheckout() async {
-    final Cart cart = Provider.of<Cart>(context, listen: false);
+    final Cart cart = widget.cart;
 
     if (cart.items.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -33,7 +34,7 @@ class _CartScreenState extends State<CartScreen> {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const CheckoutScreen(),
+        builder: (context) => CheckoutScreen(cart: cart),
       ),
     );
 
@@ -73,7 +74,7 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   void _incrementQuantity(Sandwich sandwich) {
-    final Cart cart = Provider.of<Cart>(context, listen: false);
+    final Cart cart = widget.cart;
     cart.add(sandwich, quantity: 1);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Quantity increased')),
@@ -81,7 +82,7 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   void _decrementQuantity(Sandwich sandwich) {
-    final Cart cart = Provider.of<Cart>(context, listen: false);
+    final Cart cart = widget.cart;
     final wasPresent = cart.items.containsKey(sandwich);
     cart.remove(sandwich, quantity: 1);
     if (!cart.items.containsKey(sandwich) && wasPresent) {
@@ -96,7 +97,7 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   void _removeItem(Sandwich sandwich) {
-    final Cart cart = Provider.of<Cart>(context, listen: false);
+    final Cart cart = widget.cart;
     cart.remove(sandwich, quantity: cart.getQuantity(sandwich));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Item removed from cart')),
@@ -105,7 +106,9 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ChangeNotifierProvider<Cart>.value(
+      value: widget.cart,
+      child: Scaffold(
       appBar: AppBar(
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
