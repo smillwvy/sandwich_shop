@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sandwich_shop/views/app_styles.dart';
-import 'package:sandwich_shop/views/cart_screen.dart';
 import 'package:sandwich_shop/models/cart.dart';
 import 'package:sandwich_shop/models/sandwich.dart';
+import 'package:sandwich_shop/views/cart_screen.dart';
 import 'package:sandwich_shop/views/profile_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +10,9 @@ import 'package:provider/provider.dart';
 class OrderScreen extends StatefulWidget {
   final int maxQuantity;
 
-  const OrderScreen({super.key, this.maxQuantity = 10});
+  final Cart? cart;
+
+  const OrderScreen({super.key, this.maxQuantity = 10, this.cart});
 
   @override
   State<OrderScreen> createState() {
@@ -20,6 +22,7 @@ class OrderScreen extends StatefulWidget {
 
 class _OrderScreenState extends State<OrderScreen> {
   final TextEditingController _notesController = TextEditingController();
+  late final Cart _cart;
 
   SandwichType _selectedSandwichType = SandwichType.veggieDelight;
   bool _isFootlong = true;
@@ -29,6 +32,7 @@ class _OrderScreenState extends State<OrderScreen> {
   @override
   void initState() {
     super.initState();
+    _cart = widget.cart ?? Cart();
     _notesController.addListener(() {
       setState(() {});
     });
@@ -78,8 +82,7 @@ class _OrderScreenState extends State<OrderScreen> {
         breadType: _selectedBreadType,
       );
 
-      final Cart cart = Provider.of<Cart>(context, listen: false);
-      cart.add(sandwich, quantity: _quantity);
+      _cart.add(sandwich, quantity: _quantity);
 
       String sizeText;
       if (_isFootlong) {
@@ -110,7 +113,7 @@ class _OrderScreenState extends State<OrderScreen> {
     Navigator.push(
       context,
       MaterialPageRoute<void>(
-        builder: (BuildContext context) => const CartScreen(),
+        builder: (BuildContext context) => CartScreen(cart: _cart),
       ),
     );
   }
@@ -152,7 +155,9 @@ class _OrderScreenState extends State<OrderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ChangeNotifierProvider<Cart>.value(
+      value: _cart,
+      child: Scaffold(
       appBar: AppBar(
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -295,7 +300,7 @@ class _OrderScreenState extends State<OrderScreen> {
           ),
         ),
       ),
-    );
+    ),);
   }
 }
 
