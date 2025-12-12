@@ -302,7 +302,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   onPressed: _navigateToSettings,
                   icon: Icons.settings,
                   label: 'Settings',
-                  backgroundColor: Colors.teal,
+                  backgroundColor: Colors.grey,
                 ),
                 const SizedBox(height: 20),
                 Consumer<Cart>(
