@@ -5,6 +5,7 @@ import 'package:sandwich_shop/models/sandwich.dart';
 import 'package:sandwich_shop/repositories/pricing_repository.dart';
 import 'package:sandwich_shop/views/app_styles.dart';
 import 'package:sandwich_shop/views/checkout_screen.dart';
+import 'package:sandwich_shop/views/styled_button.dart';
 
 class CartScreen extends StatefulWidget {
   final Cart cart;
@@ -227,6 +228,7 @@ class _CartScreenState extends State<CartScreen> {
           ),
         ),
       ),
-    );
+    ),
+  );
   }
 }
