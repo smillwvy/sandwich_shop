@@ -74,3 +74,18 @@ Use [the dedicated Discord channel](https://discord.com/channels/760155974467059
 to ask your questions and get help from the community.
 Please provide as much context as possible, including the error messages you are seeing and
 screenshots (you can open Discord in your web browser).
+
+## Integration Testing
+
+Integration tests were added to cover user journeys such as:
+- viewing an empty cart
+- saving a user profile
+All integration tests were executed successfully on an Android emulator.
+
+## Release Build
+
+A release build of the application was created using:
+flutter build apk --release
+
+The release build is smaller and more optimised compared to the debug build.
+The release version was installed and run on an Android emulator.
