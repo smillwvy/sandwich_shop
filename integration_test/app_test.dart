@@ -135,6 +135,49 @@ void main() {
       expect(find.text('Cart: 0 items - £0.00'), findsOneWidget);
     });
 
-    // Feel free to add more tests (e.g., to check saved orders, etc.)
+    //Exercise 1
+    // Add a test that verifies the behavior when viewing an empty cart
+
+    testWidgets('view empty cart shows empty state', (WidgetTester tester) async {
+      app.main();
+      await tester.pumpAndSettle();
+
+      // Open the cart without adding any items
+      final viewCartButton = find.widgetWithText(StyledButton, 'View Cart');
+      await tester.ensureVisible(viewCartButton);
+      await tester.tap(viewCartButton);
+      await tester.pumpAndSettle();
+
+      // Verify the empty cart message and no checkout button (edge case)
+      expect(find.text('Cart'), findsOneWidget);
+      expect(find.text('Your cart is empty.'), findsOneWidget);
+      expect(find.widgetWithText(StyledButton, 'Checkout'), findsNothing);
+    });
+
+    testWidgets('save profile shows welcome message',
+        (WidgetTester tester) async {
+      app.main();
+      await tester.pumpAndSettle();
+
+      // Verify initial state on order screen (happy path)
+
+      // Open the profile screen
+      final profileButton = find.widgetWithText(StyledButton, 'Profile');
+      await tester.ensureVisible(profileButton);
+      await tester.tap(profileButton);
+      await tester.pumpAndSettle();
+
+      // Enter name and location
+      await tester.enterText(find.byType(TextField).at(0), 'Alex');
+      await tester.enterText(find.byType(TextField).at(1), 'Campus');
+      await tester.pumpAndSettle();
+
+      // Save the profile and return to the order screen
+      await tester.tap(find.text('Save Profile'));
+      await tester.pumpAndSettle();
+
+      // Confirm the welcome message appears
+      expect(find.text('Welcome, Alex! Ordering from Campus'), findsOneWidget);
+    });
   });
 }
